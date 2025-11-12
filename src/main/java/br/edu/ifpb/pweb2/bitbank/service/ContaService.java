@@ -12,9 +12,11 @@ import java.util.List;
 @Component
 public class ContaService implements Service<Conta, Integer> {
 
+    //Injeção de dependência de Conta
     @Autowired
     private ContaRepository contaRepository;
 
+    //Injeção de dependência de Correntista
     @Autowired
     private CorrentistaRepository correntistaRepository;
 
@@ -30,6 +32,10 @@ public class ContaService implements Service<Conta, Integer> {
 
     @Override
     public Conta save(Conta conta) {
+        Correntista correntista = correntistaRepository.findById(conta.getCorrentista().getId());
+        //Relaciona a Conta com o Correntista
+        conta.setCorrentista(correntista);
+
         return contaRepository.save(conta);
     }
 }

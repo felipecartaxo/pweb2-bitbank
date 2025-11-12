@@ -8,7 +8,7 @@
     <h1 class="mb-3">Cadastro de conta</h1>
 
     <!-- "/contas/save" é o endpoint que será chamado ao clicar no botão -->
-    <form th:action="@{/contas/save}" method="POST" th:object="${conta}">
+    <form th:action="@{/contas}" method="POST" th:object="${conta}">
         <input type="hidden" th:field="*{id}" />
 
         <label for="correntista">Número</label>

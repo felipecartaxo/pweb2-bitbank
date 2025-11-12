@@ -6,11 +6,9 @@ import br.edu.ifpb.pweb2.bitbank.repository.CorrentistaRepository;
 import br.edu.ifpb.pweb2.bitbank.service.ContaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -18,41 +16,54 @@ import java.util.List;
 @RequestMapping("/contas")
 public class ContaController {
 
+    //Injeção de dependência de Correntista
     @Autowired
     private CorrentistaRepository correntistaRepository;
 
+    //Injeção de dependência de Conta
     @Autowired
     private ContaService contaService;
 
-    @RequestMapping("/form")
+    //Formulário de cadastro de Conta
+    @GetMapping("/form")
     //O ModelAndView é um objeto em que é possível definir, ao mesmo tempo, atributos e a página para onde o sistema deve ir ao terminar a execução do método
-    public ModelAndView getForm(ModelAndView modelAndView, Model model) {
-        modelAndView.setViewName("contas/form");
-        modelAndView.addObject("conta", new Conta(new Correntista()));
+    public ModelAndView getForm(ModelAndView model) {
+        model.setViewName("contas/form");
+        model.addObject("conta", new Conta(new Correntista()));
 
-        return modelAndView;
+        return model;
     }
 
-    @ModelAttribute("correntistaItems")
     //Devolve um objeto que é uma lista de correntistas cadastrados. Eles serão usados no campo select
+    @ModelAttribute("correntistaItems")
     public List<Correntista> getCorrentistas() {
         return correntistaRepository.findAll();
     }
 
-    @RequestMapping(value="/save", method = RequestMethod.POST)
-    public ModelAndView adicioneConta(Conta conta, ModelAndView modelAndView) {
+    //Realiza o cadastro da Conta
+    @PostMapping
+    public ModelAndView save(Conta conta, ModelAndView model, RedirectAttributes attr) {
         contaService.save(conta);
-        modelAndView.setViewName("contas/list");
-        modelAndView.addObject("contas", contaService.findAll());
+        attr.addFlashAttribute("mensagem", "Conta inserida com sucesso!");
+        model.setViewName("redirect:/contas");
+        //model.addObject("contas", contaService.findAll());
 
-        return modelAndView;
+        return model;
     }
 
-    @RequestMapping("/list")
-    public ModelAndView liste(ModelAndView modelAndView) {
-        modelAndView.setViewName("contas/list");
-        modelAndView.addObject("contas", contaService.findAll());
+    @GetMapping
+    public ModelAndView listAll(ModelAndView model) {
+        model.addObject("contas", contaService.findAll());
+        model.setViewName("contas/list");
 
-        return modelAndView;
+        return model;
+    }
+
+    @GetMapping("/{id}")
+    public ModelAndView getContaById(@PathVariable(value = "id") Integer id, ModelAndView model) {
+        model.addObject("conta", contaService.findById(id));
+        model.setViewName("contas/form");
+
+        return model;
     }
 }
