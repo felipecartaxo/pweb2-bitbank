@@ -2,6 +2,7 @@ package br.edu.ifpb.pweb2.bitbank.service;
 
 import br.edu.ifpb.pweb2.bitbank.model.Correntista;
 import br.edu.ifpb.pweb2.bitbank.repository.CorrentistaRepository;
+import br.edu.ifpb.pweb2.bitbank.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,7 @@ public class CorrentistaService implements Service<Correntista, Integer> {
 
     @Override
     public Correntista save(Correntista c) {
+        c.setSenha(PasswordUtil.hashPassword(c.getSenha()));
         return correntistaRepository.save(c);
     }
 }

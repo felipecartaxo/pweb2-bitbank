@@ -1,11 +1,76 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Página inicial da aplicação</title>
+    <title>Página Inicial da Aplicação</title>
+    <meta charset="utf-8" />
+
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="icon" th:href="@{/imagens/favicon.ico}" type="image/x-icon" />
 </head>
+
 <body>
-    <h1>Bitbank no ar!</h1>
+<div>
+    <!-- Logo/Header -->
+    <div class="logo-bar">
+        <span class="logo-font">
+          <img th:src="@{/imagens/bitbank-header-t.png}" alt="BitBank logo" />
+          BitBank
+        </span>
+    </div>
+
+    <!-- Menu de Navegação -->
+    <div>
+        <nav class="menu-bar">
+            <div class="menu-links">
+                <a th:classappend="${menu == 'home'} ? 'active'" th:href="@{/home}">Home</a>
+
+                <!-- Mostra os links de correntistas apenas se o usuário logado for um administrador -->
+                <a th:classappend="${menu == 'correntista'} ? 'active'" th:href="@{/correntistas}"
+                   th:if="${session.usuario != null and  session.usuario.admin}">Correntistas</a>
+
+                <!-- Mostra os links de contas apenas se o usuário logado for um administrador -->
+                <a th:classappend="${menu == 'conta'} ? 'active'" th:href="@{/contas}"
+                   th:if="${session.usuario != null and  session.usuario.admin}">Contas</a>
+            </div>
+
+            <!-- Faz o login do usuário aparecer ao lado de um botão de sair, que faz o logout -->
+            <div class="user-info">
+                <span th:if="${session.usuario != null}" th:text="${session.usuario.email}"></span>
+                <a th:href="@{/auth/logout}">
+                    <button class="logout-button">Sair</button>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Conteúdo principal -->
+    <div class="conteudo">
+        <div class="caixa">
+            <div class="caixa-titulo">
+                <span>Bitbank</span>
+            </div>
+            <div class="caixa-corpo">
+                <p>Este é o Bitbank, o seu banco digital muito mais acessível.</p>
+
+                <div>Como administrador, você poderá:</div>
+                <ul>
+                    <li>
+                        Adicionar ou consultar correntistas cadastrados usando o menu
+                        <strong>Correntistas</strong>
+                    </li>
+                    <li>
+                        Adicionar ou consultar contas cadastradas usando o menu
+                        <strong>Contas</strong>
+                    </li>
+                </ul>
+                <div>Como cliente, você poderá realizar operações na sua conta:</div>
+                <ul>
+                    <li>Realizar créditos</li>
+                    <li>Realizar pagamentos</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
